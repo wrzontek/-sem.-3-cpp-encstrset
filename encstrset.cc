@@ -1,12 +1,22 @@
 #include "encstrset.h"
 #include <iostream>
+#include <unordered_map>
+#include <unordered_set>
+
+std::unordered_map<unsigned long, std::unordered_set<std::string>>& sets() {
+    static auto* sets = new std::unordered_map<unsigned long, std::unordered_set<std::string>>;
+    return *sets;
+}
+
 
 #ifdef __cplusplus
 namespace jnp1 {
     extern "C" {
 #endif
 
-    unsigned long encstrset_new() {}
+    unsigned long encstrset_new() {
+        
+    }
 
     void encstrset_delete(unsigned long id) {}
 
@@ -26,3 +36,4 @@ namespace jnp1 {
     }
 }
 #endif
+
