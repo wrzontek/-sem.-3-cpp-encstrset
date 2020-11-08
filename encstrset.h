@@ -1,7 +1,12 @@
 #ifndef ENCSTRSET_H
 #define ENCSTRSET_H
-#include <cstdio>
-#include <cassert>
+
+#include <assert.h>
+#include <stddef.h>
+
+#ifndef __cplusplus
+#define bool int;
+#endif
 
 #ifdef __cplusplus
 namespace jnp1 {
