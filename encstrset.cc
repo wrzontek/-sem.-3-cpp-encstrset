@@ -20,7 +20,6 @@ namespace {
 
 #ifdef __cplusplus
 namespace jnp1 {
-    extern "C" {
 #endif
 
     unsigned long encstrset_new() {
@@ -40,10 +39,14 @@ namespace jnp1 {
         if (debug)
             std::cerr << "encstrset_delete(" << id << ")\n";
 
-        if (sets().count(id)) {
-            sets().erase(id);
+        auto set_iter = sets().find(id);
+
+        if (set_iter != sets().end()) {
+            sets().erase(set_iter);
+
             if (debug)
                 std::cerr << "encstrset_delete: set #" << id << " deleted\n";
+
         } else if (debug)
                 std::cerr << "encstrset_delete: set #" << id << " does not exist\n";
     }
@@ -52,8 +55,10 @@ namespace jnp1 {
         if (debug)
             std::cerr << "encstrset_size(" << id << ")\n";
 
-        if (sets().count(id)) {
-            size_t size = sets()[id].size();
+        auto set_iter = sets().find(id);
+
+        if (set_iter != sets().end()) {
+            size_t size = set_iter->second.size(); // chyba powinno to działać ale pewności nie mam
 
             if (debug)
                 std::cerr << "encstrset_size: set #" << id << " contains " << size << " element(s)\n";
@@ -106,7 +111,6 @@ namespace jnp1 {
     }
 
 #ifdef __cplusplus
-    }
 }
 #endif
 
