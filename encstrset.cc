@@ -67,7 +67,14 @@ namespace {
     void cerr_print_intro(unsigned long id, const std::string &cerr_command_name, const char *value, const char *key) {
         std::cerr << cerr_command_name;
         std::cerr << "(" << id << ", ";
-        std::cerr << "\"" << value << "\", ";
+
+        if (value == nullptr) {
+            const std::string null_value = "NULL";
+            std::cerr << null_value << ", ";
+        } else {
+            std::cerr << "\"" << value << "\", ";
+        }
+
         if (key == nullptr) {
             const std::string null_key = "NULL";
             std::cerr << null_key << ")\n";
@@ -132,7 +139,7 @@ namespace jnp1 {
                 std::cerr << cerr_command_name << ": set #" << id << " deleted\n";
 
         } else if (debug)
-            set_not_exists(id, cerr_command_name)
+            set_not_exists(id, cerr_command_name);
     }
 
     size_t encstrset_size(unsigned long id) {
@@ -161,10 +168,11 @@ namespace jnp1 {
     bool encstrset_insert(unsigned long id, const char *value, const char *key) {
         static const std::string cerr_command_name = __func__;
 
+        if (debug) {
+            cerr_print_intro(id, cerr_command_name, value, key);
+        }
+
         if (!first_parameter_null(value)) {
-            if (debug) {
-                cerr_print_intro(id, cerr_command_name, value, key);
-            }
             auto set_iter = sets().find(id);
             if (set_iter != sets().end()) {
                 std::string cypher = symmetrical_enc_dec(value, key);
