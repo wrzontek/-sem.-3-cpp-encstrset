@@ -21,9 +21,6 @@ namespace {
         return current_set_id;
     }
 
-    // Zakladamy poprawnosc danych (value != NULL && key != NULL) oraz
-    // zakonczenie znakiem '\0'.
-    // Szybciej/lepiej, gdyby dlugosci byly znane (unikam wolania funkcji z C).
     std::string symmetrical_enc_dec(const char *value, const char *key) {
         std::string result;
         size_t i = 0;
@@ -168,31 +165,30 @@ namespace jnp1 {
     bool encstrset_insert(unsigned long id, const char *value, const char *key) {
         static const std::string cerr_command_name = __func__;
 
-        if (debug) {
+        if (debug)
             cerr_print_intro(id, cerr_command_name, value, key);
-        }
 
         if (!first_parameter_null(value)) {
             auto set_iter = sets().find(id);
             if (set_iter != sets().end()) {
                 std::string cypher = symmetrical_enc_dec(value, key);
                 if (!is_cypher_present(set_iter, cypher)) {
-                    if (debug) {
+
+                    if (debug)
                         cerr_print_statement(id, cerr_command_name, cypher, " inserted");
-                    }
 
                     set_iter->second.insert(cypher);
                     return true;
 
-                } else if (debug) {
+                } else if (debug)
                     cerr_print_statement(id, cerr_command_name, cypher, " was already present");
-                }
-            } else if (debug) {
+
+            } else if (debug)
                 set_not_exists(id, cerr_command_name);
-            }
-        } else if (debug) {
+
+        } else if (debug)
             invalid_value(cerr_command_name);
-        }
+
         return false;
     }
 
@@ -200,27 +196,27 @@ namespace jnp1 {
         static const std::string cerr_command_name = __func__;
 
         if (!first_parameter_null(value)) {
-            if (debug) {
+            if (debug)
                 cerr_print_intro(id, cerr_command_name, value, key);
-            }
+
             auto set_iter = sets().find(id);
             if (set_iter != sets().end()) {
                 std::string cypher = symmetrical_enc_dec(value, key);
                 if (is_cypher_present(set_iter, cypher)) {
-                    if (debug) {
+                    if (debug)
                         cerr_print_statement(id, cerr_command_name, cypher, " removed");
-                    }
+
                     set_iter->second.erase(cypher);
                     return true;
-                } else if (debug) {
+                } else if (debug)
                     cerr_print_statement(id, cerr_command_name, cypher, " was not present");
-                }
-            } else if (debug) {
+
+            } else if (debug)
                 set_not_exists(id, cerr_command_name);
-            }
-        } else if (debug) {
+
+        } else if (debug)
             invalid_value(cerr_command_name);
-        }
+
 
         return false;
     }
@@ -229,26 +225,26 @@ namespace jnp1 {
         static const std::string cerr_command_name = __func__;
 
         if (!first_parameter_null(value)) {
-            if (debug) {
+            if (debug)
                 cerr_print_intro(id, cerr_command_name, value, key);
-            }
+
             auto set_iter = sets().find(id);
             if (set_iter != sets().end()) {
                 std::string cypher = symmetrical_enc_dec(value, key);
                 if (is_cypher_present(set_iter, cypher)) {
-                    if (debug) {
+                    if (debug)
                         cerr_print_statement(id, cerr_command_name, cypher, " is present");
-                    }
+
                     return true;
-                } else if (debug) {
+                } else if (debug)
                     cerr_print_statement(id, cerr_command_name, cypher, " is not present");
-                }
-            } else if (debug) {
+
+            } else if (debug)
                 set_not_exists(id, cerr_command_name);
-            }
-        } else if (debug) {
+
+        } else if (debug)
             invalid_value(cerr_command_name);
-        }
+
 
         return false;
     }
