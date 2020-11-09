@@ -88,7 +88,6 @@ namespace {
         std::cerr << cerr_command_name << ": invalid value (NULL)\n";
     }
 
-    // nullptr czy NULL ?
     bool first_parameter_null(const char *value) {
         return (value == nullptr);
     }
@@ -194,19 +193,20 @@ namespace jnp1 {
 
     bool encstrset_remove(unsigned long id, const char *value, const char *key) {
         static const std::string cerr_command_name = __func__;
+        if (debug)
+            cerr_print_intro(id, cerr_command_name, value, key);
 
         if (!first_parameter_null(value)) {
-            if (debug)
-                cerr_print_intro(id, cerr_command_name, value, key);
 
             auto set_iter = sets().find(id);
             if (set_iter != sets().end()) {
                 std::string cypher = symmetrical_enc_dec(value, key);
                 if (is_cypher_present(set_iter, cypher)) {
+                    set_iter->second.erase(cypher);
+
                     if (debug)
                         cerr_print_statement(id, cerr_command_name, cypher, " removed");
 
-                    set_iter->second.erase(cypher);
                     return true;
                 } else if (debug)
                     cerr_print_statement(id, cerr_command_name, cypher, " was not present");
@@ -217,16 +217,15 @@ namespace jnp1 {
         } else if (debug)
             invalid_value(cerr_command_name);
 
-
         return false;
     }
 
     bool encstrset_test(unsigned long id, const char *value, const char *key) {
         static const std::string cerr_command_name = __func__;
+        if (debug)
+            cerr_print_intro(id, cerr_command_name, value, key);
 
         if (!first_parameter_null(value)) {
-            if (debug)
-                cerr_print_intro(id, cerr_command_name, value, key);
 
             auto set_iter = sets().find(id);
             if (set_iter != sets().end()) {
@@ -244,7 +243,6 @@ namespace jnp1 {
 
         } else if (debug)
             invalid_value(cerr_command_name);
-
 
         return false;
     }
