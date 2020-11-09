@@ -1,16 +1,20 @@
 #ifndef ENCSTRSET_H
 #define ENCSTRSET_H
 
+
 #include <assert.h>
 #include <stddef.h>
 
 #ifndef __cplusplus
-#define bool int;
+    #include <stdbool.h>
+#else
+    #include <iostream>
 #endif
 
 #ifdef __cplusplus
 namespace jnp1 {
     extern "C" {
+    
 #endif
     /*
      * Tworzy nowy zbiór i zwraca jego identyfikator.
