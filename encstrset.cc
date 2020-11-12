@@ -24,13 +24,14 @@ namespace {
     }
 
     std::string symmetrical_enc_dec(const char *value, const char *key) {
+
         std::string result(value);
         if (key != nullptr) {
             size_t key_length = strlen(key);
             if (key_length > 0) {
                 size_t i = 0;
-                for (auto& value: result) {
-                    value ^= key[(i++) % key_length];
+                for (auto& result_value: result) {
+                    result_value ^= key[(i++)%key_length];
                 }
             }
         }
@@ -43,7 +44,7 @@ namespace {
         for (size_t i = 0; i < cypher.size(); ++i) {
             std::cerr << ((i > 0) ? " ": "");
             std::cerr << std::setfill('0') << std::setw(2)
-                      << std::hex << std::uppercase << static_cast<int>(cypher[i]);
+                      << std::hex << std::uppercase << static_cast<unsigned int>(cypher[i]);
         }
         std::cerr << "\"";
     }
