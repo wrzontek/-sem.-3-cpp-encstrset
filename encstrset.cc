@@ -1,6 +1,8 @@
 #include "encstrset.h"
 #include <unordered_map>
 #include <unordered_set>
+#include <iomanip>
+#include <cstring>
 
 #ifdef NDEBUG
 constexpr static bool debug = false;
@@ -22,25 +24,14 @@ namespace {
     }
 
     std::string symmetrical_enc_dec(const char *value, const char *key) {
-        std::string result;
-        size_t i = 0;
-        size_t j = 0;
+        std::string result(value);
         if (key != nullptr) {
-            while (value[i] != '\0') {
-
-                if (key[j] == '\0') {
-                    j = 0;
+            size_t key_length = strlen(key);
+            if (key_length > 0) {
+                size_t i = 0;
+                for (auto& value: result) {
+                    value ^= key[(i++) % key_length];
                 }
-                result.push_back((value[i]) ^ (key[j]));
-                if (key[j] != '\0') {
-                    ++j;
-                }
-                ++i;
-            }
-        } else {
-            while (value[i] != '\0') {
-                result.push_back(value[i]);
-                ++i;
             }
         }
 
@@ -50,18 +41,22 @@ namespace {
     void cerr_print_cypher_hex(const std::string &cypher) {
         std::cerr << "cypher "<< "\"";
         for (size_t i = 0; i < cypher.size(); ++i) {
-            std::cerr << std::hex << std::uppercase << ((i > 0) ? " ": "") << (int) cypher[i];
+            std::cerr << ((i > 0) ? " ": "");
+            std::cerr << std::setfill('0') << std::setw(2)
+                      << std::hex << std::uppercase << static_cast<int>(cypher[i]);
         }
         std::cerr << "\"";
     }
 
-    void cerr_print_statement(unsigned long id, const std::string &cerr_command_name, const std::string &cypher, const std::string &ending) {
+    void cerr_print_statement(unsigned long id, const std::string &cerr_command_name,
+                              const std::string &cypher, const std::string &ending) {
         std::cerr << cerr_command_name << ": set #" << id << ", ";
         cerr_print_cypher_hex(cypher);
         std::cerr << ending << "\n";
     }
 
-    void cerr_print_intro(unsigned long id, const std::string &cerr_command_name, const char *value, const char *key) {
+    void cerr_print_intro(unsigned long id, const std::string &cerr_command_name,
+                          const char *value, const char *key) {
         std::cerr << cerr_command_name;
         std::cerr << "(" << id << ", ";
 
@@ -92,7 +87,7 @@ namespace {
         return (value == nullptr);
     }
 
-    bool is_cypher_present(std::unordered_map<unsigned long, std::unordered_set<std::string>>::const_iterator set_iter,
+    bool is_cypher_present(map_of_string_sets_t::const_iterator set_iter,
                            const std::string &cypher) {
 
         auto cypher_iter = set_iter->second.find(cypher);
@@ -150,7 +145,8 @@ namespace jnp1 {
             size_t size = set_iter->second.size();
 
             if (debug)
-                std::cerr << cerr_command_name << ": set #" << id << " contains " << size << " element(s)\n";
+                std::cerr << cerr_command_name << ": set #" << id
+                          << " contains " << size << " element(s)\n";
 
             return size;
 
